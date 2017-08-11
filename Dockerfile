@@ -17,11 +17,11 @@ RUN echo -e "\nTLS_REQCERT never\n" >> /etc/ldap/ldap.conf
 
 # install the PHP extensions we need
 RUN apt-get update \
-  && apt-get install -y libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev graphicsmagick libldap2-dev mcrypt libmcrypt-dev \
+  && apt-get install -y git libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev graphicsmagick libldap2-dev mcrypt libmcrypt-dev \
   && rm -rf /var/lib/apt/lists/* \
   && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
   && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-  && docker-php-ext-install gd json mysqli pdo pdo_mysql opcache gettext exif calendar soap xsl sockets wddx ldap mcrypt
+  && docker-php-ext-install gd json mysqli pdo pdo_mysql opcache gettext exif calendar soap sockets wddx ldap mcrypt zip
 
 # install APCu from PECL
 RUN pecl -vvv install apcu && docker-php-ext-enable apcu
