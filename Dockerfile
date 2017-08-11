@@ -21,8 +21,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/* \
   && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
   && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-  && docker-php-ext-install gd json mysqli pdo pdo_mysql opcache gettext exif calendar soap xsl sockets wddx ldap mcrypt \
-  && apt-get purge -y --auto-remove libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev libldap2-dev libmcrypt-dev
+  && docker-php-ext-install gd json mysqli pdo pdo_mysql opcache gettext exif calendar soap xsl sockets wddx ldap mcrypt
 
 # install APCu from PECL
 RUN pecl -vvv install apcu && docker-php-ext-enable apcu
@@ -74,5 +73,8 @@ RUN { \
     echo "ServerTokens Prod"; \
     echo "TraceEnable off"; \
   } >> /etc/apache2/apache2.conf
+
+# Cleanup
+RUN apt-get purge -y --auto-remove libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev libldap2-dev libmcrypt-dev
 
 VOLUME /var/www/html
