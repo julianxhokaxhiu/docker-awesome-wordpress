@@ -33,6 +33,10 @@ RUN pecl -vvv install gmagick-beta && docker-php-ext-enable gmagick
 RUN curl -L "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar" > /usr/bin/wp \
     && chmod +x /usr/bin/wp
 
+# Download Composer CLI
+RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
+    && chmod +x /usr/bin/composer
+
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
 RUN { \
