@@ -17,8 +17,8 @@ RUN echo -e "\nTLS_REQCERT never\n" >> /etc/ldap/ldap.conf
 
 # install the PHP extensions we need
 RUN apt-get update \
+  && curl -sL https://deb.nodesource.com/setup_6.x | bash \
   && apt-get install -y git zip zlib1g-dev libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev graphicsmagick libldap2-dev mcrypt libmcrypt-dev libltdl7 mariadb-client \
-  && rm -rf /var/lib/apt/lists/* \
   && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
   && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
   && docker-php-ext-install gd json mysqli pdo pdo_mysql opcache gettext exif calendar soap sockets wddx ldap mcrypt zip
@@ -36,6 +36,11 @@ RUN curl -L "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cl
 # Download Composer CLI
 RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
     && chmod +x /usr/bin/composer
+
+# NodeJS Build Stack dependencies
+RUN apt-get install -y nodejs fontforge libbatik-java \
+  && npm i -g ttf2eot \
+  && rm -rf /var/lib/apt/lists/*
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
