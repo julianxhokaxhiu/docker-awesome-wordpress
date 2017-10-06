@@ -39,7 +39,7 @@ RUN curl --silent --show-error https://getcomposer.org/installer | php -- --inst
     && chmod +x /usr/bin/composer
 
 # NodeJS Build Stack dependencies
-RUN apt-get install -y nodejs fontforge openjdk-8-jdk libbatik-java \
+RUN apt-get install -y nodejs fontforge openjdk-8-jre-headless libbatik-java \
   && npm i -g ttf2eot \
   && rm -rf /var/lib/apt/lists/*
 
