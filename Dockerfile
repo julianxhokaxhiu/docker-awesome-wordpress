@@ -86,6 +86,6 @@ RUN { \
   } >> /etc/apache2/apache2.conf
 
 # Cleanup
-RUN apt-get purge -y --auto-remove libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev libldap2-dev libmcrypt-dev
+RUN apt-get purge -y --auto-remove libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev libldap2-dev libmcrypt-dev openjdk-7-jre openjdk-7-jre-headless
 
 VOLUME /var/www/html
