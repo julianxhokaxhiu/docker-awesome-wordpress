@@ -16,7 +16,8 @@ RUN a2enmod rewrite \
 RUN echo -e "\nTLS_REQCERT never\n" >> /etc/ldap/ldap.conf
 
 # install the PHP extensions we need
-RUN apt-get update \
+RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/backports.list \
+  && apt-get update \
   && curl -sL https://deb.nodesource.com/setup_6.x | bash \
   && apt-get install -y git zip zlib1g-dev libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev graphicsmagick libldap2-dev mcrypt libmcrypt-dev libltdl7 mariadb-client \
   && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
@@ -38,7 +39,7 @@ RUN curl --silent --show-error https://getcomposer.org/installer | php -- --inst
     && chmod +x /usr/bin/composer
 
 # NodeJS Build Stack dependencies
-RUN apt-get install -y nodejs fontforge libbatik-java \
+RUN apt-get install -y nodejs fontforge openjdk-8-jdk libbatik-java \
   && npm i -g ttf2eot \
   && rm -rf /var/lib/apt/lists/*
 
