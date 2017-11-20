@@ -41,14 +41,8 @@ RUN curl --silent --show-error https://getcomposer.org/installer | php -- --inst
 # NodeJS Build Stack dependencies
 RUN apt-get install -y -t jessie-backports ca-certificates-java openjdk-8-jre-headless libbatik-java \
   && apt-get install -y nodejs fontforge \
-  && npm i -g ttf2eot
-
-# Install mod_pagespeed
-RUN curl -o pagespeed.deb https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb \
-    && dpkg -i pagespeed.deb \
-    && rm pagespeed.deb \
-    && apt-get -f install \
-    && rm -rf /var/lib/apt/lists/*
+  && npm i -g ttf2eot \
+  && rm -rf /var/lib/apt/lists/*
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
