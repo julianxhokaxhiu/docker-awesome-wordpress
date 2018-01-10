@@ -18,7 +18,7 @@ RUN echo -e "\nTLS_REQCERT never\n" >> /etc/ldap/ldap.conf
 # install the PHP extensions we need
 RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/backports.list \
   && apt-get update \
-  && curl -sL https://deb.nodesource.com/setup_6.x | bash \
+  && curl -sL https://deb.nodesource.com/setup_8.x | bash \
   && apt-get install -y git zip zlib1g-dev libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev graphicsmagick libldap2-dev mcrypt libmcrypt-dev libltdl7 mariadb-client \
   && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
   && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
