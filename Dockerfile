@@ -3,7 +3,7 @@
 #
 # VERSION 0.1
 
-FROM php:7.1-apache
+FROM php:7.2-apache
 MAINTAINER Julian Xhokaxhiu
 
 # enable extra Apache modules
@@ -15,20 +15,23 @@ RUN a2enmod rewrite \
 # Disable Certification validation for LDAP ( may be required if LDAPS is behind a custom self-signed certificate )
 RUN echo -e "\nTLS_REQCERT never\n" >> /etc/ldap/ldap.conf
 
-# install the PHP extensions we need
-RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/backports.list \
-  && apt-get update \
-  && curl -sL https://deb.nodesource.com/setup_8.x | bash \
-  && apt-get install -y git zip zlib1g-dev libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev graphicsmagick libldap2-dev mcrypt libmcrypt-dev libltdl7 mariadb-client \
-  && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-  && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-  && docker-php-ext-install gd json mysqli pdo pdo_mysql opcache gettext exif calendar soap sockets wddx ldap mcrypt zip
+# Install required dependencies
+RUN apt-get update \
+  && apt-get install -y git zip zlib1g-dev libpng-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev graphicsmagick libldap2-dev mcrypt libmcrypt-dev libltdl7 mariadb-client gnupg
 
 # install APCu from PECL
 RUN pecl -vvv install apcu && docker-php-ext-enable apcu
 
 # install GMagick from PECL
 RUN pecl -vvv install gmagick-beta && docker-php-ext-enable gmagick
+
+# install mcrypt
+RUN pecl -vvv install mcrypt-1.0.1 && docker-php-ext-enable mcrypt
+
+# install the PHP extensions we need
+RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
+  && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+  && docker-php-ext-install gd json mysqli pdo pdo_mysql opcache gettext exif calendar soap sockets wddx ldap zip
 
 # Download WordPress CLI
 RUN curl -L "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar" > /usr/bin/wp \
@@ -39,7 +42,9 @@ RUN curl --silent --show-error https://getcomposer.org/installer | php -- --inst
     && chmod +x /usr/bin/composer
 
 # NodeJS Build Stack dependencies
-RUN apt-get install -y -t jessie-backports ca-certificates-java openjdk-8-jre-headless libbatik-java \
+RUN mkdir -p /usr/share/man/man1 \
+  && apt-get install -y ca-certificates-java openjdk-8-jre-headless libbatik-java \
+  && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
   && apt-get install -y nodejs fontforge \
   && npm i -g ttf2eot \
   && rm -rf /var/lib/apt/lists/*
@@ -87,6 +92,6 @@ RUN { \
   } >> /etc/apache2/apache2.conf
 
 # Cleanup
-RUN apt-get purge -y --auto-remove libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev libldap2-dev libmcrypt-dev openjdk-7-jre openjdk-7-jre-headless
+RUN apt-get purge -y --auto-remove libpng-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev libldap2-dev libmcrypt-dev openjdk-8-jre openjdk-8-jre-headless
 
 VOLUME /var/www/html
